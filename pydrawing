@@ -1,0 +1,143 @@
+# -*- coding:utf-8 -*-
+import pygame
+from pygame.locals import *
+from gameobjects import vector2
+import os
+from _ast import Str
+
+screen_size=(640,480)
+rect1=(0,0,20,20)
+rect2=(20,0,20,20)
+rect3=(40,0,20,20)
+color1=(0,0,0)
+color2=(255,0,0)
+color3=(192,14,235)
+color_set=color1
+size_set=1
+flag_set=0
+last_pos=None
+def font(screen,str,color):
+    my_font=pygame.font.Font('zhongwen.ttf',64)
+    name_surface=my_font.render("选中了%s"%str,True,color)
+    screen.fill((255,228,181))
+    screen.blit(name_surface,(130,0))
+def size_font(screen,num,color):
+    my_font=pygame.font.Font('zhongwen.ttf',64)
+    name_surface=my_font.render("选中了%d号粗笔"%num,True,color)
+    screen.fill((255,228,181))
+    screen.blit(name_surface,(130,0))
+def list_font(screen,color):
+    my_font=pygame.font.Font('zhongwen.ttf',20)
+    name_surface=my_font.render("按F5进行画板清屏",True,color)
+    screen.blit(name_surface,(430,0))
+def chose_color(screen):
+    global color_set
+    pressed_mouse=pygame.mouse.get_pressed()
+    pos_mouse=pygame.mouse.get_pos()
+    if pressed_mouse[0]==1 and pos_mouse[0]>=0 and pos_mouse[0]<20 and pos_mouse[1]>=0 and pos_mouse[1]<=20:
+        font(screen,'黑色',color1)
+        color_set=color1
+    if pressed_mouse[0]==1 and pos_mouse[0]>=20 and pos_mouse[0]<40 and pos_mouse[1]>=0 and pos_mouse[1]<=20:
+        color_set=color2
+        font(screen,'红色',color_set)
+        
+    if pressed_mouse[0]==1 and pos_mouse[0]>=40 and pos_mouse[0]<60 and pos_mouse[1]>=0 and pos_mouse[1]<=20:
+        font(screen,'马鞍色',color3)
+        color_set=color3
+def chose_size(screen):
+    global size_set
+    pressed_mouse=pygame.mouse.get_pressed()
+    pos_mouse=pygame.mouse.get_pos()
+    if pressed_mouse[0]==1 and pos_mouse[0]>=80 and pos_mouse[0]<100 and pos_mouse[1]>=0 and pos_mouse[1]<=20:
+        size_set=2
+        size_font(screen,size_set,color1)
+    if pressed_mouse[0]==1 and pos_mouse[0]>=120 and pos_mouse[0]<140 and pos_mouse[1]>=0 and pos_mouse[1]<=20:
+        size_set=4
+        size_font(screen,size_set,color1)   
+    if pressed_mouse[0]==1 and pos_mouse[0]>=160 and pos_mouse[0]<180 and pos_mouse[1]>=0 and pos_mouse[1]<=20:
+        size_set=6
+        size_font(screen,size_set,color1)
+    if pressed_mouse[0]==1 and pos_mouse[0]>=200 and pos_mouse[0]<220 and pos_mouse[1]>=0 and pos_mouse[1]<=20:
+        size_set=8
+        size_font(screen,size_set,color1)
+    if pressed_mouse[0]==1 and pos_mouse[0]>=240 and pos_mouse[0]<260 and pos_mouse[1]>=0 and pos_mouse[1]<=20:
+        size_set=10
+        size_font(screen,size_set,color1)
+    if pressed_mouse[0]==1 and pos_mouse[0]>=280 and pos_mouse[0]<300 and pos_mouse[1]>=0 and pos_mouse[1]<=20:
+        size_set=12
+        size_font(screen,size_set,color1)
+def color_list(surface):
+    pygame.draw.rect(surface, color1, rect1,0)
+    pygame.draw.rect(surface, color2, rect2,0)
+    pygame.draw.rect(surface, color3, rect3,0)
+def size_list(surface):
+    pygame.draw.line(surface, color1, (80,10), (100,10), 2)
+    pygame.draw.line(surface, color1, (120,10), (140,10), 4)
+    pygame.draw.line(surface, color1, (160,10), (180,10), 6)
+    pygame.draw.line(surface, color1, (200,10), (220,10), 8)
+    pygame.draw.line(surface, color1, (240,10), (260,10), 10)
+    pygame.draw.line(surface, color1, (280,10), (300,10), 12)
+    pygame.draw.circle(surface, color2, (360,10), 10, 2)
+def eraser(screen):
+    global color_set
+    global size_set
+    pressed_mouse=pygame.mouse.get_pressed()
+    pos_mouse=pygame.mouse.get_pos()
+    if pressed_mouse[0]==1 and pos_mouse[0]>=350 and pos_mouse[0]<370 and pos_mouse[1]>=0 and pos_mouse[1]<=20:
+        font(screen,'橡皮擦',(0,0,255))
+        size_set=20
+        color_set=(255,255,255)
+def draw(screen,color,pos,size,flag):
+    global last_pos
+    if flag==1:
+        pygame.draw.line(screen, color,last_pos, pos, size)
+        last_pos=pos
+        print('000000000')
+def run():
+    pygame.init()
+    screen=pygame.display.set_mode(screen_size,0)
+    screen.fill((255,255,255))
+    bland_surfance=pygame.Surface((640,64))
+    bland_surfance.fill((255,228,181))
+    chose_surfance=pygame.Surface((640,20))
+    chose_surfance.fill((255,165,0))
+    screen.blit(bland_surfance,(0,20))
+    screen.blit(chose_surfance,(0,0))
+    list_font(chose_surfance,(0,0,255))
+    global flag_set
+    global last_pos
+    while True:
+        #color_list(screen)
+        #size_list(screen)
+        #chose_color(bland_surfance)
+        for event in pygame.event.get():
+            if event.type==QUIT:
+                exit()
+            if event.type==KEYDOWN:
+                if event.key==K_ESCAPE:
+                    exit()
+            if event.type==KEYDOWN:
+                if event.key==K_F5:
+                    screen.fill((255,255,255))
+            if event.type==MOUSEBUTTONDOWN:
+                flag_set=1
+                last_pos=event.pos
+                print('oooo')
+            if event.type==MOUSEMOTION:
+                draw(screen, color_set,event.pos,size_set,flag_set)
+            if event.type==MOUSEBUTTONUP:
+                flag_set=0
+        #screen.fill((255,255,255))
+        screen.blit(bland_surfance,(0,20))
+        chose_surfance.fill((255,165,0))
+        screen.blit(chose_surfance,(0,0))
+        color_list(screen)
+        size_list(screen)
+        eraser(bland_surfance)
+        chose_color(bland_surfance)
+        chose_size(bland_surfance)
+        list_font(screen,(0,0,0))
+        pygame.display.update()
+        
+if __name__ == "__main__":
+    run()
